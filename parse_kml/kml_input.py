@@ -4,19 +4,18 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from geopy.geocoders import Nominatim
 
- # Open CSV file for writing
 with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_file:
     csv_writer = csv.writer(csv_file)
     # Write header row
     csv_writer.writerow([
-        'TYPE', 
+        'TYPE',
         'NAME', 
         'DESC', 
         'SAMPLE_ID', 
         'VISIBLE_ID', 
-        'LATITUDE', 
+        'LATITUDE',
         'LONGITUDE', 
-        'TOWN', 
+        'TOWN',
         'LGA',
         'STATE',
         'COUNTRY'
@@ -61,7 +60,7 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         found_coodinates = match.group()
                         latitude, longitude = found_coodinates.split()
                         break
-                attempt = 3
+                attempt = 5
                 for _ in range(attempt):
                     try:
                         geolocation = Nominatim(user_agent="kml_parser")
@@ -71,8 +70,9 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                     except Exception as e:
                         print(f"Geocoding service error: {e}. Retrying...")
                     print("result to default value")
-                    location = ['NULL', 'NULL', 'NULL', 'NULL']
-            print(location.raw.get('address'))
+                    location = {'raw': {'address': {'village': 'NULL', 'county': 'NULL', 'state': 'NULL', 'country': 'NULL'}}}
+
+            print(location)
             csv_writer.writerow(['T', 
                 name,
                 desc,
