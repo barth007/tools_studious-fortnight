@@ -63,16 +63,16 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         break
                 geolocation = Nominatim(user_agent="kml_parser")
                 location = geolocation.reverse(f"{latitude}, {longitude}")
-                print(location);
-                csv_writer.writerow(['T', 
-                    name,
-                    desc,
-                    sampleid,
-                    visibleid,
-                    latitude,
-                    longitude,
-                    location.raw.get('address', {}).get('city', 'NULL'),
-                    location.raw.get('address', {}).get('county', 'NULL'),
-                    location.raw.get('address', {}).get('state',  'NULL'),
-                    location.raw.get('address', {}).get('country', 'NULL')
-                    ])
+            print(location);
+            csv_writer.writerow(['T', 
+                name,
+                desc,
+                sampleid,
+                visibleid,
+                latitude,
+                longitude,
+                location.raw.get('address', {}).get('city', 'NULL'),
+                location.raw.get('address', {}).get('county', 'NULL'),
+                location.raw.get('address', {}).get('state',  'NULL'),
+                location.raw.get('address', {}).get('country', 'NULL')
+                ])
