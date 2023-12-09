@@ -81,6 +81,8 @@ class KMLParser:
                     placemarks = root.findall('.//kml:Placemark', ns)
                     for placemark in placemarks:
                         name, desc, sampleid, visibleid, coordinates = self.parse_placemark(placemark, ns)
+                        print(name, desc, sampleid, visibleid, coordinates)
+                        #if coordinates and sampleid and visibleid:
                         latitude, longitude = self.parse_coordinates(coordinates)
                         town, county, state, country = self.parse_location(latitude, longitude)
                         csv_writer.writerow(['T',
@@ -94,6 +96,8 @@ class KMLParser:
                             county,
                             state,
                             country])
+                        #else:
+                            #pass
 
 # Usage example
 if __name__ == "__main__":

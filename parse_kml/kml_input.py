@@ -61,9 +61,18 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         found_coodinates = match.group()
                         latitude, longitude = found_coodinates.split()
                         break
-                geolocation = Nominatim(user_agent="kml_parser")
-                location = geolocation.reverse(f"{latitude}, {longitude}")
-            print(location);
+                attempt = 3
+                for _ in range(attempt):
+                    try:
+                        geolocation = Nominatim(user_agent="kml_parser")
+                        location = geolocation.reverse(f"{latitude}, {longitude}")
+                        #print(location)
+                        break
+                    except exception as e:
+                        print(f"Geocoding service error: {e}. Retrying...")
+                    print("result to default value")
+                    location = ['NULL', 'NULL', 'NULL', 'NULL']
+            print(location)
             csv_writer.writerow(['T', 
                 name,
                 desc,
