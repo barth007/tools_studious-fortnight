@@ -2,12 +2,25 @@ import csv
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from geopy.geocoders import Nominatim
 
  # Open CSV file for writing
 with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_file:
     csv_writer = csv.writer(csv_file)
     # Write header row
-    csv_writer.writerow(['type', 'name', 'desc', 'sample_id', 'visible_id', 'latitude', 'longitude'])
+    csv_writer.writerow([
+        'TYPE', 
+        'NAME', 
+        'DESC', 
+        'SAMPLE_ID', 
+        'VISIBLE_ID', 
+        'LATITUDE', 
+        'LONGITUDE', 
+        'TOWN', 
+        'LGA',
+        'STATE',
+        'COUNTRY'
+        ])
 
     folder_path = Path('extract_folder_path')
     for filename in folder_path.iterdir():
@@ -25,11 +38,16 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
             placemarks = root.findall('.//kml:Placemark', ns)
 
             for placemark in placemarks:
-                name = placemark.find('.//kml:name', ns).text if placemark.find('.//kml:name', ns) is not None else 'NULL'
-                desc = placemark.find('.//kml:description', ns).text if placemark.find('.//kml:description', ns) is not None else 'NULL'
-                sampleid = placemark.find('.//kml:ExtendedData/kml:Data[@name="sampleId"]/kml:value', ns).text if placemark.find('.//kml:ExtendedData/kml:Data[@name="sampleId"]/kml:value', ns) is not None else ''
-                visibleid = placemark.find('.//kml:ExtendedData/kml:Data[@name="visibleId"]/kml:value', ns).text if placemark.find('.//kml:ExtendedData/kml:Data[@name="visibleId"]/kml:value', ns) is not None else ''
-                coordinates = placemark.find('.//kml:coordinates', ns).text if placemark.find('.//kml:coordinates', ns) is not None else 'NULL'
+                name = placemark.find('.//kml:name', ns).text\
+                if placemark.find('.//kml:name', ns) is not None else 'NULL'
+                desc = placemark.find('.//kml:description', ns).text\
+                if placemark.find('.//kml:description', ns) is not None else 'NULL'
+                sampleid = placemark.find('.//kml:ExtendedData/kml:Data[@name="sampleId"]/kml:value', ns).text\
+                if placemark.find('.//kml:ExtendedData/kml:Data[@name="sampleId"]/kml:value', ns) is not None else ''
+                visibleid = placemark.find('.//kml:ExtendedData/kml:Data[@name="visibleId"]/kml:value', ns).text\
+                if placemark.find('.//kml:ExtendedData/kml:Data[@name="visibleId"]/kml:value', ns) is not None else ''
+                coordinates = placemark.find('.//kml:coordinates', ns).text\
+                if placemark.find('.//kml:coordinates', ns) is not None else 'NULL'
                 #print(coordinates)
                 
                 # Split coordinates into latitude, longitude, and altitude
@@ -43,5 +61,18 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         found_coodinates = match.group()
                         latitude, longitude = found_coodinates.split()
                         break
-                csv_writer.writerow(['T', name, desc, sampleid, visibleid, latitude, longitude])
-                
+                geolocation = Nominatim(user_agent="kml_parser")
+                location = geolocation.reverse(f"{latitude}, {longitude}")
+                print(location);
+                csv_writer.writerow(['T', 
+                    name,
+                    desc,
+                    sampleid,
+                    visibleid,
+                    latitude,
+                    longitude,
+                    location.raw.get('address', {}).get('city', 'NULL'),
+                    location.raw.get('address', {}).get('county', 'NULL'),
+                    location.raw.get('address', {}).get('state',  'NULL'),
+                    location.raw.get('address', {}).get('country', 'NULL')
+                    ])
