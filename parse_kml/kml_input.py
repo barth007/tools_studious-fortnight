@@ -68,7 +68,7 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         location = geolocation.reverse(f"{latitude}, {longitude}")
                         #print(location)
                         break
-                    except exception as e:
+                    except Exception as e:
                         print(f"Geocoding service error: {e}. Retrying...")
                     print("result to default value")
                     location = ['NULL', 'NULL', 'NULL', 'NULL']
