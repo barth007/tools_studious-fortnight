@@ -72,7 +72,7 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                         print(f"Geocoding service error: {e}. Retrying...")
                     print("result to default value")
                     location = ['NULL', 'NULL', 'NULL', 'NULL']
-            print(location)
+            print(location.raw.get('address'))
             csv_writer.writerow(['T', 
                 name,
                 desc,
@@ -80,8 +80,10 @@ with open('extracted_data.csv', mode='a', newline='', encoding='utf-8') as csv_f
                 visibleid,
                 latitude,
                 longitude,
-                location.raw.get('address', {}).get('city', 'NULL'),
-                location.raw.get('address', {}).get('county', 'NULL'),
+                location.raw.get('address', {}).get('village', 'NULL'),
+                location.raw.get('address', {}).get('county')\
+                if location.raw.get('address', {}).get('county')\
+                else location.raw.get('address', {}).get('town', 'NULL'),
                 location.raw.get('address', {}).get('state',  'NULL'),
                 location.raw.get('address', {}).get('country', 'NULL')
                 ])

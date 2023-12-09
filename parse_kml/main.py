@@ -11,4 +11,4 @@ def unzipfile(path, extract_folder_path):
     zip_ref.close()
 
 if __name__ == "__main__":
-    unzipfile('sample_points.zip', 'extract_folder_path')
+    unzipfile('kml_sample2.zip', 'extract_folder_path')
